@@ -38,26 +38,31 @@ class MainActivity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
         imageView = findViewById<ImageView>(R.id.photo_frame_field)
+    }
 
+    override fun onResume() {
+        super.onResume()
         loader.getSdCardImages().forEach {
             photosFiles.add(it)
         }
-
-        CoroutineScope(Dispatchers.Main).launch {
-           while (this.isActive){
-               runCatching {
-                   photosFiles.shuffle()
-
-                   photosFiles.forEach {
-                       runCatching {
-                           val bitmap = BitmapFactory.decodeFile(it.absolutePath)
-                           imageView.setImageBitmap(bitmap)
-                       }
-
-                       delay(60000)
-                   }
-               }
-           }
-        }
+        startSlideshow()
     }
+
+    fun startSlideshow() =
+        CoroutineScope(Dispatchers.Main).launch {
+            while (this.isActive) {
+                runCatching {
+                    photosFiles.shuffle()
+
+                    photosFiles.forEach {
+                        runCatching {
+                            val bitmap = BitmapFactory.decodeFile(it.absolutePath)
+                            imageView.setImageBitmap(bitmap)
+                        }
+
+                        delay(60000)
+                    }
+                }
+            }
+        }
 }
