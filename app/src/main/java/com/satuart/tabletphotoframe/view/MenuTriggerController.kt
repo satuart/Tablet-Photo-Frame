@@ -1,4 +1,4 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.view
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -16,7 +16,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import com.satuart.tabletphotoframe.R
 import com.satuart.tabletphotoframe.databinding.OverlayMenuBinding
+import com.satuart.tabletphotoframe.util.HoldGestureMath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

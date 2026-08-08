@@ -1,4 +1,4 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.util
 
 object HoldGestureMath {
 

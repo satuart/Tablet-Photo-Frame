@@ -1,4 +1,4 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.data
 
 import android.os.Environment
 import java.io.File

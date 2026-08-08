@@ -1,5 +1,6 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.viewmodel
 
+import com.satuart.tabletphotoframe.repository.PhotoRepository
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

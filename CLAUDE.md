@@ -2,7 +2,7 @@
 
 Author: Luann Campos (satuart) — recorded by Claude Code
 Created: 08-25 08-08-2026
-Last updated: 08-25 08-08-2026
+Last updated: 09-40 08-08-2026
 
 > This worktree checks out the `menu-feature` branch of `Tablet-Photo-Frame`. The main
 > worktree keeps `CLAUDE.md` (work tracking/objectives) and `GEMINI.md` (tech stack) split;
@@ -72,6 +72,41 @@ UI framework migration. No Compose.
    sourcing later (e.g. SAF-picked folder) without touching ViewModel/View code.
 4. **No DI container** — a 3-line factory (`SlideshowViewModelFactory(repository)`)
    constructed in `MainActivity.onCreate` is the entire wiring.
+
+## Package organization
+
+Package-by-layer: one Kotlin package per architectural layer above. Flat (single-package)
+layout stops being readable once ViewModel/Repository/data-source classes pile up next to
+Views, and package-by-feature is unwarranted for a 2-screen app — package-by-layer keeps
+the MVVM boundary visible in the file tree without ceremony.
+
+```
+com.satuart.tabletphotoframe
+├── view/         Activities, custom Views, View-layer controllers
+├── viewmodel/    ViewModels, UI state data classes, ViewModelProvider.Factory
+├── repository/   Repository interfaces + impls
+├── data/         Data sources (filesystem scan today; SAF later)
+└── util/         Pure, stateless helpers with no Android framework dependency
+```
+
+| File | Package |
+|---|---|
+| `MainActivity`, `SettingsActivity`, `MenuTriggerController`, `HoldRingView` | `view` |
+| `SlideshowViewModel`, `SlideshowUiState`, `SlideshowViewModelFactory` | `viewmodel` |
+| `PhotoRepository`, `SdCardPhotoRepository` | `repository` |
+| `LoadPhotosUseCases` | `data` |
+| `HoldGestureMath` | `util` |
+
+- `R` and generated `databinding` classes stay in the base package
+  (`com.satuart.tabletphotoframe`) — AGP generates them there regardless of where callers
+  live, so `view/` classes import `R` explicitly instead of relying on same-package access.
+- Test sources (`src/test`, `src/androidTest`) mirror this layout under the same package
+  name — e.g. `viewmodel/SlideshowViewModel.kt` is tested by
+  `test/.../viewmodel/SlideshowViewModelTest.kt`. Template tests with no real subject
+  (`ExampleUnitTest`, `ExampleInstrumentedTest`) stay at the package root.
+- A new class goes in the package matching its layer. If it doesn't fit one of the five
+  above, that means a layer boundary changed — update this table, don't add a 6th package
+  informally.
 
 ### What doesn't change
 

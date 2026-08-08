@@ -1,4 +1,4 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.view
 
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -14,7 +14,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.satuart.tabletphotoframe.R
 import com.satuart.tabletphotoframe.databinding.ActivityMainBinding
+import com.satuart.tabletphotoframe.repository.SdCardPhotoRepository
+import com.satuart.tabletphotoframe.viewmodel.SlideshowViewModel
+import com.satuart.tabletphotoframe.viewmodel.SlideshowViewModelFactory
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

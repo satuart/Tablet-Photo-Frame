@@ -1,8 +1,9 @@
-package com.satuart.tabletphotoframe
+package com.satuart.tabletphotoframe.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.satuart.tabletphotoframe.repository.PhotoRepository
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
