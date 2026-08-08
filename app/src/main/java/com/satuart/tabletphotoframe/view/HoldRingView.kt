@@ -41,7 +41,6 @@ class HoldRingView @JvmOverloads constructor(
     init {
         isClickable = false
         isFocusable = false
-        alpha = 0f
     }
 
     fun updateContact(x: Float, y: Float) {
