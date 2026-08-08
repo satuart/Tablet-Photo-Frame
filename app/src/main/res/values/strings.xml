@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Tablet Photo Frame</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="menu_pause_slideshow">Pause Slideshow</string>
+    <string name="menu_resume_slideshow">Resume Slideshow</string>
+    <string name="menu_refresh_photos">Refresh Photos</string>
+    <string name="menu_tap_outside_hint">Tap outside (or press Back) to return</string>
+    <string name="toast_refreshed">Refreshed</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_placeholder_text">Settings coming soon</string>
 </resources>
