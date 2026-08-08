@@ -1,68 +1,107 @@
 package com.satuart.tabletphotoframe
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.satuart.tabletphotoframe.databinding.ActivityMainBinding
 import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-    private val loader = LoadPhotosUseCases()
-    private val photosFiles: MutableList<File> = ArrayList()
-    private lateinit var imageView: ImageView
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var menuTriggerController: MenuTriggerController
+
+    private val viewModel: SlideshowViewModel by viewModels {
+        SlideshowViewModelFactory(SdCardPhotoRepository())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        applyImmersiveMode()
+
+        menuTriggerController = MenuTriggerController(
+            activity = this,
+            rootView = binding.main,
+            imageView = binding.photoFrameField,
+            holdRingView = binding.holdRingView,
+            menuOverlayBinding = binding.menuOverlay,
+            isPausedProvider = { viewModel.uiState.value.isPaused },
+            onOpenSettings = ::openSettings,
+            onTogglePause = viewModel::togglePause,
+            onRefresh = viewModel::refresh,
+        )
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { viewModel.uiState.collect { state -> renderPhoto(state.currentPhoto) } }
+                launch { viewModel.refreshed.collect { showRefreshedToast() } }
+            }
+        }
+    }
+
+    private suspend fun renderPhoto(file: File?) {
+        if (file == null) return
+        val bitmap = withContext(Dispatchers.IO) {
+            runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+        }
+        bitmap?.let { binding.photoFrameField.setImageBitmap(it) }
+    }
+
+    private fun showRefreshedToast() {
+        Toast.makeText(this, getString(R.string.toast_refreshed), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun applyImmersiveMode() {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-
-        imageView = findViewById<ImageView>(R.id.photo_frame_field)
     }
 
     override fun onResume() {
         super.onResume()
-        loader.getSdCardImages().forEach {
-            photosFiles.add(it)
-        }
-        startSlideshow()
+        applyImmersiveMode()
+        viewModel.startSlideshow()
     }
 
-    fun startSlideshow() =
-        CoroutineScope(Dispatchers.Main).launch {
-            while (this.isActive) {
-                runCatching {
-                    photosFiles.shuffle()
+    override fun onPause() {
+        super.onPause()
+        viewModel.stopSlideshow()
+    }
 
-                    photosFiles.forEach {
-                        runCatching {
-                            val bitmap = BitmapFactory.decodeFile(it.absolutePath)
-                            imageView.setImageBitmap(bitmap)
-                        }
+    override fun onDestroy() {
+        super.onDestroy()
+        menuTriggerController.destroy()
+    }
 
-                        delay(60000)
-                    }
-                }
-            }
-        }
+    private fun openSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
 }
