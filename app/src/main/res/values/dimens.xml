@@ -10,5 +10,5 @@
     <dimen name="hold_ring_radius">64dp</dimen>
     <dimen name="hold_ring_stroke_width">5dp</dimen>
     <dimen name="hold_ring_dot_radius">7dp</dimen>
-    <dimen name="hold_drift_tolerance">56dp</dimen>
+    <dimen name="hold_drift_tolerance">40dp</dimen>
 </resources>
