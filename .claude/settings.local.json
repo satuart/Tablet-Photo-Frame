@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-Process *)",
+      "Bash(cp ~/.claude/statusline.sh /d/Projects/claude-config/statusline.sh)",
+      "Read(//c/Users/luann/.claude/**)"
+    ]
+  }
+}

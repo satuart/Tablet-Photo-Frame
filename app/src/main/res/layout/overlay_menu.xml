@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/menu_overlay_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/menu_scrim_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:id="@+id/menu_center_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/menu_card"
+            android:layout_width="@dimen/menu_card_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_menu_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/row_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/menu_settings"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/menu_row_padding_horizontal"
+                android:paddingTop="@dimen/menu_row_padding_vertical"
+                android:paddingEnd="@dimen/menu_row_padding_horizontal"
+                android:paddingBottom="@dimen/menu_row_padding_vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/menu_icon_size"
+                    android:layout_height="@dimen/menu_icon_size"
+                    android:layout_marginEnd="13dp"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/ic_menu_settings" />
+
+                <TextView
+                    android:id="@+id/text_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/menu_settings"
+                    android:textColor="#EBFFFFFF"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_divider_height"
+                android:background="@color/menu_divider" />
+
+            <LinearLayout
+                android:id="@+id/row_pause_resume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/menu_pause_slideshow"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/menu_row_padding_horizontal"
+                android:paddingTop="@dimen/menu_row_padding_vertical"
+                android:paddingEnd="@dimen/menu_row_padding_horizontal"
+                android:paddingBottom="@dimen/menu_row_padding_vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/menu_icon_size"
+                    android:layout_height="@dimen/menu_icon_size"
+                    android:layout_marginEnd="13dp"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/ic_menu_pause" />
+
+                <TextView
+                    android:id="@+id/text_pause_resume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/menu_pause_slideshow"
+                    android:textColor="#EBFFFFFF"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/menu_divider_height"
+                android:background="@color/menu_divider" />
+
+            <LinearLayout
+                android:id="@+id/row_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/menu_refresh_photos"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/menu_row_padding_horizontal"
+                android:paddingTop="@dimen/menu_row_padding_vertical"
+                android:paddingEnd="@dimen/menu_row_padding_horizontal"
+                android:paddingBottom="@dimen/menu_row_padding_vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/menu_icon_size"
+                    android:layout_height="@dimen/menu_icon_size"
+                    android:layout_marginEnd="13dp"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/ic_menu_refresh" />
+
+                <TextView
+                    android:id="@+id/text_refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/menu_refresh_photos"
+                    android:textColor="#EBFFFFFF"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_tap_outside_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/menu_tap_outside_hint"
+            android:textColor="@color/menu_hint_text"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</FrameLayout>
