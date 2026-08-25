@@ -1,5 +1,6 @@
 package com.satuart.tabletphotoframe.viewmodel
 
+import com.satuart.tabletphotoframe.data.PhotoRef
 import com.satuart.tabletphotoframe.repository.PhotoRepository
 import java.io.File
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ class SlideshowViewModelTest {
 
     @Test
     fun startSlideshow_showsFirstLoadedPhoto() = runTest(dispatcher) {
-        val photo = File("photo1.jpg")
+        val photo = PhotoRef.LocalFile(File("photo1.jpg"))
         val viewModel = SlideshowViewModel(FakePhotoRepository(listOf(photo)))
 
         viewModel.startSlideshow()
@@ -53,7 +54,7 @@ class SlideshowViewModelTest {
 
     @Test
     fun refresh_emitsRefreshedEvent() = runTest(dispatcher) {
-        val viewModel = SlideshowViewModel(FakePhotoRepository(listOf(File("photo1.jpg"))))
+        val viewModel = SlideshowViewModel(FakePhotoRepository(listOf(PhotoRef.LocalFile(File("photo1.jpg")))))
         var refreshedCount = 0
         val collector = launch { viewModel.refreshed.collect { refreshedCount++ } }
         dispatcher.scheduler.runCurrent()
@@ -65,7 +66,7 @@ class SlideshowViewModelTest {
         collector.cancel()
     }
 
-    private class FakePhotoRepository(private val photos: List<File>) : PhotoRepository {
-        override suspend fun loadPhotos(): List<File> = photos
+    private class FakePhotoRepository(private val photos: List<PhotoRef>) : PhotoRepository {
+        override suspend fun loadPhotos(): List<PhotoRef> = photos
     }
 }

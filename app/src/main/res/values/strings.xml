@@ -7,6 +7,18 @@
     <string name="menu_refresh_photos">Refresh Photos</string>
     <string name="menu_tap_outside_hint">Tap outside (or press Back) to return</string>
     <string name="toast_refreshed">Refreshed</string>
+    <string name="toast_opening_settings">Opening settings…</string>
+
     <string name="settings_title">Settings</string>
-    <string name="settings_placeholder_text">Settings coming soon</string>
+    <string name="settings_close">Close</string>
+    <string name="settings_photo_folder_label">Photo folder</string>
+    <string name="settings_change_folder">Change</string>
+    <string name="settings_no_folder_selected">Using default folder (/sdcard/Pictures)</string>
+    <string name="settings_interval_label">Time between photos</string>
+    <string name="settings_interval_value_format">%1$d sec</string>
+    <string name="settings_interval_decrease">Decrease interval</string>
+    <string name="settings_interval_increase">Increase interval</string>
+    <string name="settings_night_mode_label">Go dark at night</string>
+    <string name="settings_night_from_label">From</string>
+    <string name="settings_night_until_label">Until</string>
 </resources>

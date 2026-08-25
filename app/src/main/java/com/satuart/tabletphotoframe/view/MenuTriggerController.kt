@@ -59,6 +59,7 @@ class MenuTriggerController(
     private var startX = 0f
     private var startY = 0f
     private var currentDimFactor = 1f
+    private var baseDimFactor = 1f
 
     private var holdAnimator: ValueAnimator? = null
     private var fadeAnimator: ValueAnimator? = null
@@ -213,15 +214,24 @@ class MenuTriggerController(
 
     private fun applyDim(factor: Float) {
         currentDimFactor = factor
+        val effective = factor * baseDimFactor
         val matrix = ColorMatrix(
             floatArrayOf(
-                factor, 0f, 0f, 0f, 0f,
-                0f, factor, 0f, 0f, 0f,
-                0f, 0f, factor, 0f, 0f,
+                effective, 0f, 0f, 0f, 0f,
+                0f, effective, 0f, 0f, 0f,
+                0f, 0f, effective, 0f, 0f,
                 0f, 0f, 0f, 1f, 0f,
             )
         )
         imageView.colorFilter = ColorMatrixColorFilter(matrix)
+    }
+
+    /** Persistent multiplier (e.g. night-mode dimming) applied on top of the transient hold/menu dim. */
+    fun setBaseDimFactor(factor: Float) {
+        val clamped = factor.coerceIn(0f, 1f)
+        if (clamped == baseDimFactor) return
+        baseDimFactor = clamped
+        applyDim(currentDimFactor)
     }
 
     private fun updatePauseResumeLabel() {

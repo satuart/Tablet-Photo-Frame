@@ -3,8 +3,9 @@ package com.satuart.tabletphotoframe.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.satuart.tabletphotoframe.data.PhotoRef
+import com.satuart.tabletphotoframe.data.SettingsRepository
 import com.satuart.tabletphotoframe.repository.PhotoRepository
-import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,13 +20,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 data class SlideshowUiState(
-    val currentPhoto: File? = null,
+    val currentPhoto: PhotoRef? = null,
     val isPaused: Boolean = false,
 )
 
-class SlideshowViewModel(private val repository: PhotoRepository) : ViewModel() {
+class SlideshowViewModel(
+    private val repository: PhotoRepository,
+    private val intervalSecondsProvider: () -> Int = { SettingsRepository.DEFAULT_INTERVAL_SECONDS },
+) : ViewModel() {
 
-    private val photos: MutableList<File> = mutableListOf()
+    private val photos: MutableList<PhotoRef> = mutableListOf()
 
     private val _uiState = MutableStateFlow(SlideshowUiState())
     val uiState: StateFlow<SlideshowUiState> = _uiState.asStateFlow()
@@ -73,10 +77,11 @@ class SlideshowViewModel(private val repository: PhotoRepository) : ViewModel() 
         while (isActive) {
             if (photos.isEmpty()) return
             photos.shuffle()
-            for (file in photos) {
+            val intervalMs = intervalSecondsProvider().toLong() * 1000L
+            for (photo in photos) {
                 if (!isActive) break
-                _uiState.update { it.copy(currentPhoto = file) }
-                awaitUnpausedDelay(PHOTO_INTERVAL_MS)
+                _uiState.update { it.copy(currentPhoto = photo) }
+                awaitUnpausedDelay(intervalMs)
             }
         }
     }
@@ -90,16 +95,16 @@ class SlideshowViewModel(private val repository: PhotoRepository) : ViewModel() 
     }
 
     companion object {
-        private const val PHOTO_INTERVAL_MS = 60_000L
         private const val DELAY_STEP_MS = 250L
     }
 }
 
 class SlideshowViewModelFactory(
     private val repository: PhotoRepository,
+    private val intervalSecondsProvider: () -> Int = { SettingsRepository.DEFAULT_INTERVAL_SECONDS },
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return SlideshowViewModel(repository) as T
+        return SlideshowViewModel(repository, intervalSecondsProvider) as T
     }
 }

@@ -2,6 +2,7 @@ package com.satuart.tabletphotoframe.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -30,6 +31,13 @@ class HoldRingView @JvmOverloads constructor(
         style = Paint.Style.FILL
         color = ContextCompat.getColor(context, R.color.hold_ring_color)
     }
+
+    private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = ringStrokeWidthPx
+        color = ContextCompat.getColor(context, R.color.hold_ring_track_color)
+    }
+    private val trackBaseAlpha = Color.alpha(trackPaint.color)
 
     private val ringRect = RectF()
 
@@ -64,13 +72,16 @@ class HoldRingView @JvmOverloads constructor(
         dotPaint.alpha = alphaInt
         canvas.drawCircle(contactX, contactY, dotRadiusPx, dotPaint)
 
+        ringRect.set(
+            contactX - ringRadiusPx,
+            contactY - ringRadiusPx,
+            contactX + ringRadiusPx,
+            contactY + ringRadiusPx,
+        )
+        trackPaint.alpha = (trackBaseAlpha * visualAlpha).toInt()
+        canvas.drawOval(ringRect, trackPaint)
+
         if (ringProgress > 0f) {
-            ringRect.set(
-                contactX - ringRadiusPx,
-                contactY - ringRadiusPx,
-                contactX + ringRadiusPx,
-                contactY + ringRadiusPx,
-            )
             ringPaint.alpha = alphaInt
             canvas.drawArc(ringRect, -90f, 360f * ringProgress, false, ringPaint)
         }
