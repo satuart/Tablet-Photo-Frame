@@ -17,4 +17,11 @@
         <item name="android:statusBarColor" tools:targetApi="21">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Translucent window so SettingsActivity's scrim blends over MainActivity's photo
+         underneath instead of an opaque windowBackground. -->
+    <style name="Theme.TabletPhotoFrame.Settings">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

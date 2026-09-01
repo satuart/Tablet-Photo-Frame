@@ -27,7 +27,8 @@
         <activity
             android:name=".view.SettingsActivity"
             android:exported="false"
-            android:label="@string/settings_title" />
+            android:label="@string/settings_title"
+            android:theme="@style/Theme.TabletPhotoFrame.Settings" />
 
     </application>
 
