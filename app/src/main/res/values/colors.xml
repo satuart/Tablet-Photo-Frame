@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="gold_accent">#D9A865</color>
+    <color name="menu_card_background">#E6141414</color>
+    <color name="menu_scrim_background">#66000000</color>
+    <color name="menu_divider">#33FFFFFF</color>
+    <color name="menu_hint_text">#6BFFFFFF</color>
+    <color name="hold_ring_color">#D9A865</color>
+    <color name="hold_ring_track_color">#24FFFFFF</color>
+    <color name="toast_pill_background">#E6141210</color>
 </resources>
