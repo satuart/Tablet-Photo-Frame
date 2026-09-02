@@ -1,6 +1,7 @@
 package com.satuart.tabletphotoframe.view
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
@@ -107,16 +108,50 @@ class MainActivity : AppCompatActivity() {
     private suspend fun renderPhoto(photo: PhotoRef?) {
         if (photo == null) return
         val bitmap = withContext(Dispatchers.IO) {
-            runCatching {
-                when (photo) {
-                    is PhotoRef.LocalFile -> BitmapFactory.decodeFile(photo.file.absolutePath)
-                    is PhotoRef.DocumentUri -> contentResolver.openInputStream(photo.uri)?.use {
-                        BitmapFactory.decodeStream(it)
-                    }
-                }
-            }.getOrNull()
+            runCatching { decodeSampledBitmap(photo) }.getOrNull()
         }
         bitmap?.let { binding.photoFrameField.setImageBitmap(it) }
+    }
+
+    // Full-resolution camera photos exceed the hardware Canvas's max bitmap size and crash on draw.
+    private fun decodeSampledBitmap(photo: PhotoRef): Bitmap? {
+        val reqWidth = resources.displayMetrics.widthPixels
+        val reqHeight = resources.displayMetrics.heightPixels
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        readBounds(photo, options)
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
+        options.inJustDecodeBounds = false
+        return decodeWithOptions(photo, options)
+    }
+
+    private fun readBounds(photo: PhotoRef, options: BitmapFactory.Options) {
+        when (photo) {
+            is PhotoRef.LocalFile -> BitmapFactory.decodeFile(photo.file.absolutePath, options)
+            is PhotoRef.DocumentUri -> contentResolver.openInputStream(photo.uri)?.use {
+                BitmapFactory.decodeStream(it, null, options)
+            }
+        }
+    }
+
+    private fun decodeWithOptions(photo: PhotoRef, options: BitmapFactory.Options): Bitmap? =
+        when (photo) {
+            is PhotoRef.LocalFile -> BitmapFactory.decodeFile(photo.file.absolutePath, options)
+            is PhotoRef.DocumentUri -> contentResolver.openInputStream(photo.uri)?.use {
+                BitmapFactory.decodeStream(it, null, options)
+            }
+        }
+
+    // Cap against the larger device dimension on both axes: a photo/screen orientation
+    // mismatch (e.g. portrait photo on a landscape tablet) can leave one axis under
+    // reqWidth/reqHeight even when the image is huge, defeating a width-vs-height,
+    // height-vs-width paired comparison.
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        val maxDimension = maxOf(reqWidth, reqHeight)
+        var inSampleSize = 1
+        while (options.outHeight / inSampleSize > maxDimension || options.outWidth / inSampleSize > maxDimension) {
+            inSampleSize *= 2
+        }
+        return inSampleSize
     }
 
     private fun showToast(message: String) {
